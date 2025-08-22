@@ -36,6 +36,10 @@ setup_paths() {
     _dl_cache="${_build_dir}/download_cache"
     _src_dir="${_build_dir}/src"
     _out_dir="${_src_dir}/out/Default"
+
+    _subs_cache="${_build_dir}/subs.tar.gz"
+    _namesubs_cache="${_build_dir}/namesubs.tar"
+
     setup_arch
 
     mkdir -p "${_dl_cache}"
@@ -62,6 +66,9 @@ fetch_sources() {
         "${_main_repo}/utils/downloads.py" unpack -i "${_main_repo}/downloads.ini" -c "${_dl_cache}" "${_src_dir}"
     fi
 
+    "${_main_repo}/utils/downloads.py" retrieve -i "${_main_repo}/extras.ini" -c "${_dl_cache}"
+    "${_main_repo}/utils/downloads.py" unpack -i "${_main_repo}/extras.ini" -c "${_dl_cache}" "${_src_dir}"
+
     touch "${stamp}"
 }
 
@@ -78,6 +85,29 @@ apply_domsub() {
         "${_main_repo}/utils/domain_substitution.py" apply -r "${_main_repo}/domain_regex.list" -f "${_main_repo}/domain_substitution.list" "${_src_dir}"
         touch "${_src_dir}/.domsub.stamp"
     fi
+}
+
+helium_substitution() {
+    python3 "$_main_repo/utils/name_substitution.py" --sub \
+        -t "$_src_dir" --backup-path "$_namesubs_cache"
+
+    python3 "$_main_repo/utils/domain_substitution.py" apply \
+        -r "$_main_repo/domain_regex.list" \
+        -f "$_main_repo/domain_substitution.list" \
+        -c "$_subs_cache" \
+        "$_src_dir"
+}
+
+helium_version() {
+    python3 "$_main_repo/utils/helium_version.py" \
+        --tree "$_main_repo" \
+        --platform-tree "$_root" \
+        --chromium-tree "$_src_dir"
+}
+
+helium_resources() {
+    python3 "$_main_repo/utils/generate_resources.py" "$_main_repo/resources/generate_resources.txt" "$_main_repo/resources"
+    python3 "$_main_repo/utils/replace_resources.py" "$_main_repo/resources/helium_resources.txt" "$_main_repo/resources" "$_src_dir"
 }
 
 write_gn_args() {
@@ -155,7 +185,7 @@ gn_gen() {
     ./out/Default/gn gen out/Default --fail-on-unused-args
 }
 
-maybe_build() {
+build() {
     cd "${_src_dir}"
     ninja -C out/Default chrome chromedriver
 }
