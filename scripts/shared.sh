@@ -40,13 +40,19 @@ setup_paths() {
     _subs_cache="${_build_dir}/subs.tar.gz"
     _namesubs_cache="${_build_dir}/namesubs.tar"
 
+    mkdir -p "${_dl_cache}"
+}
+
+setup_environment() {
+    setup_paths
     setup_arch
 
-    mkdir -p "${_dl_cache}"
+    _has_pgo=false
 }
 
 fetch_sources() {
     local use_clone="${1:-false}"
+    local with_pgo="${2:-false}"
     local stamp="${_src_dir}/.downloaded.stamp"
 
     if [ -f "${stamp}" ]; then
@@ -54,13 +60,33 @@ fetch_sources() {
         return 0
     fi
 
-    if ${use_clone}; then
-        _host_arch_clone="$_host_arch"
+    if [ "$with_pgo" = true ] && [ "$use_clone" != true ]; then
+        echo "builds with pgo need to use clone, specify -c" >&2
+        exit 1
+    fi
+
+    if [ "$use_clone" = true ]; then
+        local _host_arch_clone="$_host_arch"
+        local _pgo_args=()
+
         if [ "$_host_arch_clone" = x64 ]; then
             _host_arch_clone="amd64"
         fi
 
-        "${_main_repo}/utils/clone.py" --sysroot "$_host_arch_clone" -o "${_src_dir}"
+        if [ "$with_pgo" = true ]; then
+            if [ "$_build_arch" = x64 ]; then
+                _pgo_args=(-p linux)
+                _has_pgo=true
+            else
+                echo "pgo profiles are currently supported for x86_64 only" >&2
+                echo "build arch is $_build_arch, skipping pgo download" >&2
+            fi
+        fi
+
+        "${_main_repo}/utils/clone.py" \
+            --sysroot "$_host_arch_clone" \
+            "${_pgo_args[@]}" \
+            -o "${_src_dir}"
     else
         "${_main_repo}/utils/downloads.py" retrieve -i "${_main_repo}/downloads.ini" -c "${_dl_cache}"
         "${_main_repo}/utils/downloads.py" unpack -i "${_main_repo}/downloads.ini" -c "${_dl_cache}" "${_src_dir}"
@@ -116,6 +142,10 @@ write_gn_args() {
     cat "${_main_repo}/flags.gn" "${_root}/flags.linux.gn" | tee "${_out_dir}/args.gn"
     echo "target_cpu = \"$_build_arch\"" | tee -a "${_out_dir}/args.gn"
     echo "v8_target_cpu = \"$_build_arch\"" | tee -a "${_out_dir}/args.gn"
+
+    if [ "$_has_pgo" = true ]; then
+        echo "chrome_pgo_phase = 2" | tee -a "${_out_dir}/args.gn"
+    fi
 }
 
 # fix downloading of prebuilt tools and sysroot files

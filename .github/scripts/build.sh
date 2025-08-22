@@ -3,10 +3,10 @@ set -euxo pipefail
 
 . "/repo/scripts/shared.sh"
 
-setup_paths
+setup_environment
 
 if [ "$_prepare_only" = true ]; then
-    fetch_sources false
+    fetch_sources true true
     apply_patches
     apply_domsub
     write_gn_args

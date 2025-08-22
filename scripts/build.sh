@@ -2,18 +2,23 @@
 set -euo pipefail
 
 clone=false
-if [[ "${1:-}" == "-c" ]]; then
-    clone=true
-fi
+with_pgo=false
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -c) clone=true; shift;;
+        --pgo) with_pgo=true; shift;;
+    esac
+done
 
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)/shared.sh"
 
-setup_paths
+setup_environment
 
 # clean out/ directory before build
 rm -rf "${_src_dir}/out" || true
 
-fetch_sources "$clone"
+fetch_sources "$clone" "$with_pgo"
 apply_patches
 helium_substitution
 helium_version
