@@ -31,7 +31,7 @@ setup_arch() {
 
 setup_paths() {
     _root="$(repo_root)"
-    _main_repo="${_root}/ungoogled-chromium"
+    _main_repo="${_root}/helium-chromium"
     _build_dir="${_root}/build"
     _dl_cache="${_build_dir}/download_cache"
     _src_dir="${_build_dir}/src"

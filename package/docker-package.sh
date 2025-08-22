@@ -3,9 +3,9 @@ set -euo pipefail
 
 _current_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 _root_dir="$(cd "${_current_dir}/.." && pwd)"
-_git_submodule="ungoogled-chromium"
+_git_submodule="helium-chromium"
 
-_image="ungoogled-chromium-trixie-slim:packager"
+_image="helium-chromium-trixie-slim:packager"
 
 docker buildx build --load -t "${_image}" -f "${_root_dir}/docker/package.Dockerfile" .
 
