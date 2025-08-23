@@ -83,6 +83,10 @@ fetch_sources() {
             fi
         fi
 
+        HOME=$(mktemp -d)
+        XDG_CONFIG_HOME="$HOME/.config"
+        export HOME XDG_CONFIG_HOME
+
         "${_main_repo}/utils/clone.py" \
             --sysroot "$_host_arch_clone" \
             "${_pgo_args[@]}" \
