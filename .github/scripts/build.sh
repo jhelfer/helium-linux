@@ -5,6 +5,13 @@ set -euxo pipefail
 
 setup_environment
 
+if ! env | grep -q SCCACHE; then
+    export SCCACHE_GHA_ENABLED=on
+    export SCCACHE_GHA_VERSION="$_build_arch"
+else
+    export SCCACHE_WEBDAV_KEY_PREFIX="$_build_arch"
+fi
+
 if [ "$_prepare_only" = true ]; then
     fetch_sources true true
     apply_patches

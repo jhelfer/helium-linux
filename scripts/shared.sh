@@ -146,6 +146,10 @@ write_gn_args() {
     if [ "$_has_pgo" = true ]; then
         echo "chrome_pgo_phase = 2" | tee -a "${_out_dir}/args.gn"
     fi
+
+    if command -v sccache >/dev/null 2>&1 && env | grep -q ^SCCACHE; then
+        echo 'cc_wrapper = "sccache"' | tee -a "${_out_dir}/args.gn"
+    fi
 }
 
 # fix downloading of prebuilt tools and sysroot files

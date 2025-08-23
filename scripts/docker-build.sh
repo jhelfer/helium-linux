@@ -24,6 +24,14 @@ _extra_env=()
 [ -n "${GITHUB_OUTPUT:-}" ] && _extra_env+=(-e GITHUB_OUTPUT)
 [ -n "${ARCH:-}" ] && _extra_env+=(-e ARCH)
 
+for sccache_env_name in $(env | grep ^SCCACHE_ | cut -d= -f1); do
+    _extra_env+=(-e "$sccache_env_name")
+done
+
+for actions_env_name in $(env | grep ^ACTIONS_ | cut -d= -f1); do
+    _extra_env+=(-e "$actions_env_name")
+done
+
 # match host user to avoid permission issues on bind mount
 _user_uidgid="$(id -u):$(id -g)"
 
