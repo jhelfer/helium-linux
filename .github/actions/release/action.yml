@@ -4,6 +4,13 @@ description: Create GitHub release and upload packaged artifacts
 runs:
   using: composite
   steps:
+    - name: Get version info
+      id: version
+      shell: bash
+      run: |
+        helium_version=$(python3 "helium-chromium/utils/helium_version.py" --tree "helium-chromium/" --platform-tree "." --print)
+        echo "version=${helium_version}" >> $GITHUB_OUTPUT
+
     - name: Download AppImage artifacts
       uses: actions/download-artifact@v4
       with:
@@ -25,6 +32,7 @@ runs:
     - name: Create Release
       uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1, pinned commit hash
       with:
+        tag_name: ${{ steps.version.outputs.version }}
         fail_on_unmatched_files: true
         files: |
           release/helium-*.AppImage
