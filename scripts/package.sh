@@ -7,11 +7,11 @@ _build_dir="$_root_dir/build"
 _release_dir="$_build_dir/release"
 _app_dir="$_release_dir/Helium.AppDir"
 
-_chromium_version=$(cat "$_root_dir/helium-chromium/chromium_version.txt")
-_helium_revision=$(cat "$_root_dir/helium-chromium/revision.txt")
-
-_app_name="Helium"
-_version="$_chromium_version-$_helium_revision"
+_app_name="helium"
+_version=$(python3 "$_root_dir/helium-chromium/utils/helium_version.py" \
+                   --tree "$_root_dir/helium-chromium" \
+                   --platform-tree "$_root_dir" \
+                   --print)
 
 _arch=$(cat "$_build_dir/src/out/Default/args.gn" \
                 | grep ^target_cpu \
@@ -68,8 +68,8 @@ tar vcf - "$_tarball_name" \
 
 # create AppImage
 rm -rf "$_app_dir"
-mkdir -p "$_app_dir/opt/helium-chromium/" "$_app_dir/usr/share/icons/hicolor/48x48/apps/"
-cp -r "$_tarball_dir"/* "$_app_dir/opt/helium-chromium/"
+mkdir -p "$_app_dir/opt/helium/" "$_app_dir/usr/share/icons/hicolor/48x48/apps/"
+cp -r "$_tarball_dir"/* "$_app_dir/opt/helium/"
 cp "$_root_dir/package/helium.desktop" "$_app_dir"
 sed -i -e 's|Exec=chromium|Exec=AppRun|g' "$_app_dir/helium.desktop"
 
@@ -79,14 +79,14 @@ THIS="$(readlink -f "${0}")"
 HERE="$(dirname "${THIS}")"
 export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
 export CHROME_WRAPPER="${THIS}"
-"${HERE}"/opt/helium-chromium/chrome "$@"
+"${HERE}"/opt/helium/chrome "$@"
 EOF
 chmod a+x "$_app_dir/AppRun"
 
-cp "${_app_dir}/opt/helium-chromium/product_logo_48.png" "$_app_dir/usr/share/icons/hicolor/48x48/apps/chromium.png"
+cp "${_app_dir}/opt/helium/product_logo_48.png" "$_app_dir/usr/share/icons/hicolor/48x48/apps/chromium.png"
 cp "${_app_dir}/usr/share/icons/hicolor/48x48/apps/chromium.png" "$_app_dir"
 
-export APPIMAGETOOL_APP_NAME="$_app_name"
+export APPIMAGETOOL_APP_NAME="Helium"
 export VERSION="$_version"
 
 appimagetool \
