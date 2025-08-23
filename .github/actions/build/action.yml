@@ -1,5 +1,5 @@
-name: Build Chromium
-description: Build ungoogled-chromium with Docker and upload build cache
+name: Build Helium
+description: Build Helium with Docker and upload build cache
 
 inputs:
   prepare-only:

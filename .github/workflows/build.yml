@@ -1,4 +1,4 @@
-name: Build Linux AppImage for ungoogled-chromium
+name: Build Linux AppImage for Helium
 on:
   push:
     tags:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    name: Build ungoogled-chromium binaries and AppImage
+    name: Build Helium binaries and AppImage
     strategy:
       matrix:
         arch: [arm64, x86_64]

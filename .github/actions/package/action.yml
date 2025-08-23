@@ -1,5 +1,5 @@
 name: Package AppImage
-description: Package ungoogled-chromium as AppImage and tar.xz, upload artifacts
+description: Package Helium as AppImage and tar.xz, upload artifacts
 
 runs:
   using: composite
@@ -28,25 +28,21 @@ runs:
       id: version
       shell: bash
       run: |
-        chromium_version=$(cat ungoogled-chromium/chromium_version.txt)
-        ungoogled_revision=$(cat ungoogled-chromium/revision.txt)
-        version="${chromium_version}-${ungoogled_revision}"
-        echo "version=${version}" >> $GITHUB_OUTPUT
-        echo "chromium_version=${chromium_version}" >> $GITHUB_OUTPUT
-        echo "ungoogled_revision=${ungoogled_revision}" >> $GITHUB_OUTPUT
+        helium_version=$(python3 "helium-chromium/utils/helium_version.py" --tree "helium-chromium/" --platform-tree "." --print)
+        echo "version=${helium_version}" >> $GITHUB_OUTPUT
 
     - name: Upload AppImage artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ungoogled-chromium-${{ steps.version.outputs.version }}-${{ env.ARCH }}-AppImage
-        path: build/release/ungoogled-chromium-${{ steps.version.outputs.version }}-${{ env.ARCH }}.AppImage*
+        name: helium-${{ steps.version.outputs.version }}-${{ env.ARCH }}-AppImage
+        path: build/release/helium-${{ steps.version.outputs.version }}-${{ env.ARCH }}.AppImage*
         if-no-files-found: error
         compression-level: 0
 
     - name: Upload tar.xz artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ungoogled-chromium-${{ steps.version.outputs.version }}-${{ env.ARCH }}-linux
-        path: build/release/ungoogled-chromium-${{ steps.version.outputs.version }}-${{ env.ARCH }}_linux.tar.xz
+        name: helium-${{ steps.version.outputs.version }}-${{ env.ARCH }}-linux
+        path: build/release/helium-${{ steps.version.outputs.version }}-${{ env.ARCH }}_linux.tar.xz
         if-no-files-found: error
         compression-level: 0
