@@ -5,10 +5,10 @@ set -euxo pipefail
 
 setup_environment
 
-if ! env | grep -q SCCACHE; then
+if [ "$_runner_environment" = "github-hosted" ]; then
     export SCCACHE_GHA_ENABLED=on
     export SCCACHE_GHA_VERSION="$_build_arch"
-else
+else  # depot
     export SCCACHE_WEBDAV_KEY_PREFIX="$_build_arch"
 fi
 
