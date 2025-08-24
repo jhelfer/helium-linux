@@ -41,6 +41,9 @@ runs:
       shell: bash
       run: bash ./.github/scripts/import-cache.sh
 
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.9
+
     - name: Build
       id: build
       shell: bash
