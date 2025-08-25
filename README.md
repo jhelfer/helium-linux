@@ -3,9 +3,13 @@ Portable Linux (`.AppImage`) packaging for [Helium](https://github.com/imputnet/
 
 ## Credits
 This repo is based on
-[ungoogled-chromium-portablelinux](https://github.com/ungoogled-software/ungoogled-chromium-portablelinux),
-but is pretty heavily modified for Helium. Huge shout-out to everyone behind ungoogled-chromium,
+[ungoogled-chromium-portablelinux](https://github.com/ungoogled-software/ungoogled-chromium-portablelinux)
+and modified for Helium. Huge shout-out to everyone behind ungoogled-chromium,
 they made working with Chromium infinitely easier.
+
+Big thank you to [Depot](https://depot.dev/) for sponsoring our runners, which handle the Linux
+builds of Helium. Their high-performance infrastructure lets us compile, package, and release
+new builds of Helium within hours, not days.
 
 ## License
 All code, patches, modified portions of imported code or patches, and
