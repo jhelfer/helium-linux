@@ -16,6 +16,9 @@ if [ "$_prepare_only" = true ]; then
     fetch_sources true true
     apply_patches
     apply_domsub
+    helium_substitution
+    helium_version
+    helium_resources
     write_gn_args
     fix_tool_downloading
     setup_toolchain
