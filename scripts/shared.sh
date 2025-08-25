@@ -120,12 +120,6 @@ apply_domsub() {
 helium_substitution() {
     python3 "$_main_repo/utils/name_substitution.py" --sub \
         -t "$_src_dir" --backup-path "$_namesubs_cache"
-
-    python3 "$_main_repo/utils/domain_substitution.py" apply \
-        -r "$_main_repo/domain_regex.list" \
-        -f "$_main_repo/domain_substitution.list" \
-        -c "$_subs_cache" \
-        "$_src_dir"
 }
 
 helium_version() {

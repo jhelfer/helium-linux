@@ -20,6 +20,7 @@ rm -rf "${_src_dir}/out" || true
 
 fetch_sources "$clone" "$with_pgo"
 apply_patches
+apply_domsub
 helium_substitution
 helium_version
 helium_resources
