@@ -1,3 +1,14 @@
+--- a/chrome/BUILD.gn
++++ b/chrome/BUILD.gn
+@@ -1792,7 +1792,7 @@ if (is_linux || is_chromeos) {
+     ]
+     if (is_linux) {
+       sources += [
+-        "//chrome/app/theme/$branding_path_component/linux/product_logo_48.png",
++        "//chrome/app/theme/$branding_path_component/linux/product_logo_256.png",
+       ]
+     } else {
+       sources +=
 --- a/chrome/common/channel_info_posix.cc
 +++ b/chrome/common/channel_info_posix.cc
 @@ -81,18 +81,13 @@ std::string GetChannelName(WithExtendedS
