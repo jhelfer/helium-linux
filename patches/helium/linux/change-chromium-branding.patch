@@ -1,0 +1,51 @@
+--- a/chrome/common/channel_info_posix.cc
++++ b/chrome/common/channel_info_posix.cc
+@@ -81,18 +81,13 @@ std::string GetChannelName(WithExtendedS
+ }
+ 
+ std::string GetChannelSuffixForDataDir() {
+-  switch (GetChannel()) {
+-    case version_info::Channel::BETA:
+-      return "-beta";
+-    case version_info::Channel::DEV:
+-      return "-unstable";
+-    case version_info::Channel::CANARY:
+-      return "-canary";
+-    default:
++#if !defined(OFFICIAL_BUILD)
++  return ".dev";
++#else
+       // Stable, extended stable, and unknown (e.g. in unbranded builds) don't
+       // get a suffix.
+       return std::string();
+-  }
++#endif
+ }
+ 
+ #if BUILDFLAG(IS_LINUX)
+--- a/chrome/common/chrome_paths_linux.cc
++++ b/chrome/common/chrome_paths_linux.cc
+@@ -81,7 +81,7 @@ bool GetDefaultUserDataDirectory(base::F
+   std::unique_ptr<base::Environment> env(base::Environment::Create());
+   base::FilePath config_dir;
+   std::optional<std::string> chrome_config_home_str =
+-      env->GetVar("CHROME_CONFIG_HOME");
++      env->GetVar("HELIUM_CONFIG_HOME");
+   if (chrome_config_home_str.has_value() &&
+       base::IsStringUTF8(chrome_config_home_str.value())) {
+     config_dir = base::FilePath::FromUTF8Unsafe(chrome_config_home_str.value());
+@@ -90,13 +90,7 @@ bool GetDefaultUserDataDirectory(base::F
+         GetXDGDirectory(env.get(), kXdgConfigHomeEnvVar, kDotConfigDir);
+   }
+ 
+-#if BUILDFLAG(GOOGLE_CHROME_FOR_TESTING_BRANDING)
+-  std::string data_dir_basename = "google-chrome-for-testing";
+-#elif BUILDFLAG(GOOGLE_CHROME_BRANDING)
+-  std::string data_dir_basename = "google-chrome";
+-#else
+-  std::string data_dir_basename = "chromium";
+-#endif
++  std::string data_dir_basename = "net.imput.helium";
+   *result = config_dir.Append(data_dir_basename + GetChannelSuffixForDataDir());
+   return true;
+ }
