@@ -3,3 +3,4 @@ ungoogled-chromium/portablelinux/use-oauth2-client-switches-as-default.patch
 ungoogled-chromium/portablelinux/fix-compiling-on-arm64.patch
 
 helium/linux/change-chromium-branding.patch
+helium/linux/use-default-theme.patch
