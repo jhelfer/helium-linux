@@ -51,6 +51,7 @@ xdg-settings"
 
 echo "copying release files and creating $_tarball_name.tar.xz"
 
+rm -rf "$_tarball_dir"
 mkdir -p "$_tarball_dir"
 
 for file in $_files; do
