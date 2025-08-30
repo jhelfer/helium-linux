@@ -42,7 +42,7 @@ libqt6_shim.so
 libvk_swiftshader.so
 libvulkan.so.1
 locales/
-product_logo_48.png
+product_logo_256.png
 resources.pak
 v8_context_snapshot.bin
 vk_swiftshader_icd.json
@@ -51,6 +51,7 @@ xdg-settings"
 
 echo "copying release files and creating $_tarball_name.tar.xz"
 
+rm -rf "$_tarball_dir"
 mkdir -p "$_tarball_dir"
 
 for file in $_files; do
@@ -68,7 +69,7 @@ tar vcf - "$_tarball_name" \
 
 # create AppImage
 rm -rf "$_app_dir"
-mkdir -p "$_app_dir/opt/helium/" "$_app_dir/usr/share/icons/hicolor/48x48/apps/"
+mkdir -p "$_app_dir/opt/helium/" "$_app_dir/usr/share/icons/hicolor/256x256/apps/"
 cp -r "$_tarball_dir"/* "$_app_dir/opt/helium/"
 cp "$_root_dir/package/helium.desktop" "$_app_dir"
 sed -i -e 's|Exec=chromium|Exec=AppRun|g' "$_app_dir/helium.desktop"
@@ -83,8 +84,9 @@ export CHROME_WRAPPER="${THIS}"
 EOF
 chmod a+x "$_app_dir/AppRun"
 
-cp "${_app_dir}/opt/helium/product_logo_48.png" "$_app_dir/usr/share/icons/hicolor/48x48/apps/chromium.png"
-cp "${_app_dir}/usr/share/icons/hicolor/48x48/apps/chromium.png" "$_app_dir"
+for out in "$_app_dir/helium.png" "${_app_dir}/usr/share/icons/hicolor/256x256/apps/helium.png"; do
+    cp "${_app_dir}/opt/helium/product_logo_256.png" "$out"
+done
 
 export APPIMAGETOOL_APP_NAME="Helium"
 export VERSION="$_version"
