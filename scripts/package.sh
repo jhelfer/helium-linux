@@ -84,8 +84,8 @@ export CHROME_WRAPPER="${THIS}"
 EOF
 chmod a+x "$_app_dir/AppRun"
 
-cp "${_app_dir}/opt/helium/product_logo_48.png" "$_app_dir/usr/share/icons/hicolor/48x48/apps/chromium.png"
-cp "${_app_dir}/usr/share/icons/hicolor/48x48/apps/chromium.png" "$_app_dir"
+cp "${_app_dir}/opt/helium/product_logo_48.png" "$_app_dir/usr/share/icons/hicolor/48x48/apps/helium.png"
+cp "${_app_dir}/usr/share/icons/hicolor/48x48/apps/helium.png" "$_app_dir"
 
 export APPIMAGETOOL_APP_NAME="Helium"
 export VERSION="$_version"
