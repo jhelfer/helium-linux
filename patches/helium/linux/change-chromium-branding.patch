@@ -1,6 +1,6 @@
 --- a/chrome/BUILD.gn
 +++ b/chrome/BUILD.gn
-@@ -1792,7 +1792,7 @@ if (is_linux || is_chromeos) {
+@@ -1810,7 +1810,7 @@ if (is_linux || is_chromeos) {
      ]
      if (is_linux) {
        sources += [
@@ -121,7 +121,7 @@
 +RDN="net.imput.helium"
 --- a/media/audio/pulse/pulse_util.cc
 +++ b/media/audio/pulse/pulse_util.cc
-@@ -44,8 +44,8 @@ namespace {
+@@ -39,8 +39,8 @@ namespace {
  constexpr char kBrowserDisplayName[] = "google-chrome";
  #define PRODUCT_STRING "Google Chrome"
  #else
