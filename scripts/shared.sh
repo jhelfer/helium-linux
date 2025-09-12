@@ -95,9 +95,6 @@ fetch_sources() {
         "${_main_repo}/utils/downloads.py" unpack -i "${_main_repo}/downloads.ini" -c "${_dl_cache}" "${_src_dir}"
     fi
 
-    "${_main_repo}/utils/downloads.py" retrieve -i "${_main_repo}/extras.ini" -c "${_dl_cache}"
-    "${_main_repo}/utils/downloads.py" unpack -i "${_main_repo}/extras.ini" -c "${_dl_cache}" "${_src_dir}"
-
     touch "${stamp}"
 }
 
