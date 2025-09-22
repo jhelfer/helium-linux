@@ -1,5 +1,5 @@
 # helium-linux
-Portable Linux (`.AppImage`) packaging for [Helium](https://github.com/imputnet/helium-chromium).
+Portable Linux (`.AppImage`) packaging for [Helium](https://github.com/imputnet/helium).
 
 ## Credits
 This repo is based on
