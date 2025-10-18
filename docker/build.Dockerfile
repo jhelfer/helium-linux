@@ -1,5 +1,7 @@
 FROM debian:trixie-slim
 
+ARG UID=1000
+ARG GID=$UID
 ARG NODE_VERSION="22"
 
 # set deb to non-interactive mode and upgrade packages
@@ -40,7 +42,7 @@ RUN tar --strip-components=1 -xvzf /tmp/sccache.tar.gz \
     -C /usr/bin --wildcards '*/sccache'
 
 # create builder user
-RUN groupadd -g 1000 builder && useradd -d /home/builder -g 1000 -u 1000 -m builder
+RUN groupadd -g ${GID} builder && useradd -d /home/builder -g ${GID} -u ${UID} -m builder
 
 USER builder
 WORKDIR /repo

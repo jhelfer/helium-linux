@@ -1,5 +1,8 @@
 FROM debian:trixie-slim
 
+ARG UID=1000
+ARG GID=$UID
+
 ## Set deb to non-interactive mode and upgrade packages
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && export DEBIAN_FRONTEND=noninteractive
 RUN apt -y update && apt -y upgrade
@@ -24,7 +27,7 @@ RUN mv /usr/bin/appimagetool-$(uname -m).AppImage /usr/bin/appimagetool
 RUN chmod +x /usr/bin/appimagetool
 
 # create builder user
-RUN groupadd -g 1000 builder && useradd -d /home/builder -g 1000 -u 1000 -m builder
+RUN groupadd -g ${GID} builder && useradd -d /home/builder -g ${GID} -u ${UID} -m builder
 
 USER builder
 

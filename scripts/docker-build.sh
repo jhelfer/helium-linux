@@ -4,9 +4,22 @@ set -euo pipefail
 _base_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && cd .. && pwd)"
 _image="chromium-builder:trixie-slim"
 
+# match host user to avoid permission issues on bind mount
+_user_uidgid="$(id -u):$(id -g)"
+_docker_image_args=()
+
+if [ "$_user_uidgid" != "0:0" ]; then
+    _docker_image_args+=(--build-arg "UID=$(id -u)")
+    _docker_image_args+=(--build-arg "GID=$(id -g)")
+fi
+
 if [ -z "${_use_existing_image:-}" ]; then
     echo "building docker image '${_image}'"
-    cd "${_base_dir}/docker" && docker buildx build --load -t "${_image}" -f ./build.Dockerfile .
+    cd "${_base_dir}/docker" && \
+        docker buildx build --load \
+            -t "${_image}" \
+            -f ./build.Dockerfile \
+            "${_docker_image_args[@]}" .
 else
     echo "using existing docker image '${_image}'"
 fi
@@ -33,22 +46,19 @@ for actions_env_name in $(env | grep ^ACTIONS_ | cut -d= -f1); do
     _extra_env+=(-e "$actions_env_name")
 done
 
-# match host user to avoid permission issues on bind mount
-_user_uidgid="$(id -u):$(id -g)"
-
 _build_start=$(date)
 echo "docker build start at ${_build_start}"
 
-_gha_mount=""
+_gha_mount=()
 
 if [ -n "${GITHUB_OUTPUT:-}" ]; then
-    _gha_mount="-v $GITHUB_OUTPUT:$GITHUB_OUTPUT"
+    _gha_mount=(-v "$GITHUB_OUTPUT:$GITHUB_OUTPUT")
 fi
 
 cd "${_base_dir}" && docker run --rm -i \
     -u "${_user_uidgid}" \
     -v "${_base_dir}:/repo" \
-    $_gha_mount \
+    "${_gha_mount[@]}" \
     "${_extra_env[@]}" "${_image}" bash "${_entrypoint}" "$@"
 
 _build_end=$(date)
