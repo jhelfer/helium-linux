@@ -179,10 +179,10 @@ jobs:
                         needs.build_part_10.result) }}
     needs: build_part_10
     steps:
+      - name: Free up disk space
+        uses: jlumbroso/free-disk-space@main
       - uses: actions/checkout@v4
         with: { submodules: true }
-      - name: Free up disk space
-        uses: jlumbroso/free-disk-space@v2
       - uses: ./.github/actions/package
         with:
           private_key: ${{ secrets.GPG_PRIVATE_KEY }}
