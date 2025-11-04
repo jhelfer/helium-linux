@@ -17,9 +17,9 @@ Cr-Commit-Position: refs/heads/main@{#1525748}
 
 --- a/ui/ozone/platform/wayland/host/wayland_wp_color_management_surface.cc
 +++ b/ui/ozone/platform/wayland/host/wayland_wp_color_management_surface.cc
-@@ -93,6 +93,14 @@ void WaylandWpColorManagementSurface::On
-   CHECK(self);
-   CHECK_EQ(feedback_surface, self->feedback_surface_.get());
+@@ -102,6 +102,14 @@ void WaylandWpColorManagementSurface::On
+   // to reference the old object ID after it has been destroyed.
+   self->image_description_.reset();
  
 +  // Reset the previous image description before creating a new one.
 +  // Per the color management protocol specification:
