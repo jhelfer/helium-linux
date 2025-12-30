@@ -63,6 +63,10 @@ cp "$_root_dir/package/helium-wrapper.sh" "$_tarball_dir/helium-wrapper"
 wait
 (cd "$_tarball_dir" && ln -sf helium-wrapper chrome-wrapper)
 
+find "$_tarball_dir" -type f -exec file {} + \
+    | awk -F: '/ELF/ {print $1}' \
+    | xargs strip --strip-unneeded
+
 _size="$(du -sk "$_tarball_dir" | cut -f1)"
 
 pushd "$_release_dir"
