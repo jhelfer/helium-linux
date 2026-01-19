@@ -36,7 +36,7 @@ else
         echo "Task timed out after ${_task_timeout}s; continuing in next run."
         echo "status=running" >> "$GITHUB_OUTPUT"
         exit 0
-    elif [ "$rc" -eq 0 ] && [ -x "${_out_dir}/chrome" ] && [ -x "${_out_dir}/chromedriver" ]; then
+    elif [ "$rc" -eq 0 ] && [ -x "${_out_dir}/helium" ] && [ -x "${_out_dir}/chromedriver" ]; then
         echo "status=completed" >> "$GITHUB_OUTPUT"
     fi
 

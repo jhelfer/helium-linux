@@ -28,10 +28,10 @@ _update_info="gh-releases-zsync|imputnet|helium-linux|latest|$_app_name-*-$_arch
 _tarball_name="${_release_name}_linux"
 _tarball_dir="$_release_dir/$_tarball_name"
 
-_files="chrome
+_files="helium
 chrome_100_percent.pak
 chrome_200_percent.pak
-chrome_crashpad_handler
+helium_crashpad_handler
 chromedriver
 icudtl.dat
 libEGL.so

@@ -82,4 +82,4 @@ if needs_apparmor_bootstrap && has_apparmor_prereqs; then
         APPARMOR_BOOTSTRAPPED=1 exec "$APPIMAGE"
 fi
 
-"${HERE}"/opt/helium/chrome "$@"
+"${HERE}"/opt/helium/helium "$@"
