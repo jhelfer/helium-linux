@@ -28,12 +28,11 @@ _update_info="gh-releases-zsync|imputnet|helium-linux|latest|$_app_name-*-$_arch
 _tarball_name="${_release_name}_linux"
 _tarball_dir="$_release_dir/$_tarball_name"
 
-_files="chrome
+_files="helium
 chrome_100_percent.pak
 chrome_200_percent.pak
-chrome_crashpad_handler
+helium_crashpad_handler
 chromedriver
-chrome-wrapper
 icudtl.dat
 libEGL.so
 libGLESv2.so
@@ -59,33 +58,38 @@ for file in $_files; do
 done
 
 cp "$_root_dir/package/helium.desktop" "$_tarball_dir"
+cp "$_root_dir/package/helium-wrapper.sh" "$_tarball_dir/helium-wrapper"
 
 wait
+(cd "$_tarball_dir" && ln -sf helium chrome)
+
+if command -v eu-strip >/dev/null 2>&1; then
+    _strip_cmd=eu-strip
+else
+    _strip_cmd="strip --strip-unneeded"
+fi
+
+find "$_tarball_dir" -type f -exec file {} + \
+    | awk -F: '/ELF/ {print $1}' \
+    | xargs $_strip_cmd
 
 _size="$(du -sk "$_tarball_dir" | cut -f1)"
 
 pushd "$_release_dir"
 
+TAR_PATH="$_release_dir/$_tarball_name.tar.xz"
 tar vcf - "$_tarball_name" \
     | pv -s"${_size}k" \
-    | xz -e9 > "$_release_dir/$_tarball_name.tar.xz" &
+    | xz -e9 > "$TAR_PATH" &
 
 # create AppImage
 rm -rf "$_app_dir"
 mkdir -p "$_app_dir/opt/helium/" "$_app_dir/usr/share/icons/hicolor/256x256/apps/"
 cp -r "$_tarball_dir"/* "$_app_dir/opt/helium/"
 cp "$_root_dir/package/helium.desktop" "$_app_dir"
-sed -i -e 's|Exec=chromium|Exec=AppRun|g' "$_app_dir/helium.desktop"
+sed -i -e 's|Exec=helium|Exec=AppRun|g' "$_app_dir/helium.desktop"
 
-cat > "$_app_dir/AppRun" <<'EOF'
-#!/bin/sh
-THIS="$(readlink -f "${0}")"
-HERE="$(dirname "${THIS}")"
-export LD_LIBRARY_PATH="${HERE}"/usr/lib:$PATH
-export CHROME_WRAPPER="${THIS}"
-"${HERE}"/opt/helium/chrome "$@"
-EOF
-chmod a+x "$_app_dir/AppRun"
+cp "$_root_dir/package/helium-wrapper-appimage.sh" "$_app_dir/AppRun"
 
 for out in "$_app_dir/helium.png" "${_app_dir}/usr/share/icons/hicolor/256x256/apps/helium.png"; do
     cp "${_app_dir}/opt/helium/product_logo_256.png" "$out"
@@ -106,5 +110,10 @@ appimagetool \
     "$_release_name.AppImage" "$@" &
 popd
 wait
+
+if [ -n "${SIGN_TARBALL:-}" ]; then
+    gpg --detach-sign --passphrase "$GPG_PASSPHRASE" \
+        --output "$TAR_PATH.asc" "$TAR_PATH"
+fi
 
 rm -rf "$_tarball_dir" "$_app_dir"

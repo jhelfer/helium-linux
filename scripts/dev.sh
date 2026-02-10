@@ -111,7 +111,7 @@ ___helium_build() {
 }
 
 ___helium_run() {
-    cd "$_src_dir" && ./out/Default/chrome \
+    cd "$_src_dir" && ./out/Default/helium \
     --user-data-dir="$HOME/.config/net.imput.helium.dev" \
     --enable-ui-devtools=$RANDOM
 }
